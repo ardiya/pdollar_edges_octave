@@ -63,14 +63,14 @@ end
 % perform evaluation on each image (this part can be very slow)
 assert(exist(resDir,'dir')==7); assert(exist(gtDir,'dir')==7);
 ids=dir(fullfile(gtDir,'*.mat')); ids={ids.name}; n=length(ids);
-do=false(1,n); jobs=cell(1,n); res=cell(1,n);
+do_eval=false(1,n); jobs=cell(1,n); res=cell(1,n);
 for i=1:n, id=ids{i}(1:end-4);
-  res{i}=fullfile(evalDir,[id '_ev1.txt']); do(i)=~exist(res{i},'file');
+  res{i}=fullfile(evalDir,[id '_ev1.txt']); do_eval(i)=~exist(res{i},'file');
   im1=fullfile(resDir,[id '.png']); gt1=fullfile(gtDir,[id '.mat']);
   jobs{i}={im1,gt1,'out',res{i},'thrs',p.thrs,'maxDist',p.maxDist,...
     'thin',p.thin}; if(0), edgesEvalImg(jobs{i}{:}); end
 end
-fevalDistr('edgesEvalImg',jobs(do),p.pDistr{:});
+fevalDistr('edgesEvalImg',jobs(do_eval),p.pDistr{:});
 
 % collect evaluation results
 I=dlmread(res{1}); T=I(:,1);
